@@ -1,4 +1,4 @@
-import { IsUUID, IsOptional, IsString, MaxLength, IsNumber, IsInt } from 'class-validator';
+import { IsInt, IsNumber, IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
 
 
 export class CreateProductDto {
@@ -14,5 +14,6 @@ export class CreateProductDto {
     countSeal: number;
     @IsString()
     @IsUUID("4")
+    @IsOptional()
     provider: string;
 }
