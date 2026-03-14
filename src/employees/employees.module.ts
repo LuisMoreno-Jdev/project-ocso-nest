@@ -5,7 +5,9 @@ import { EmployeesService } from './employees.service';
 import { Employee } from './entities/employee.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Employee])],
+  imports: [
+    TypeOrmModule.forFeature([Employee])
+  ],
   controllers: [EmployeesController],
   providers: [EmployeesService],
 })
