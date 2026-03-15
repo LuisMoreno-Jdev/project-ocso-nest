@@ -8,6 +8,9 @@ export class Location {
     locationName: string;
     @Column('text')
     locationAddress: string;
-    @Column('array')
+    @Column({
+        type: 'float',
+        array: true,
+    })
     locationLatLng: number[];
 }
