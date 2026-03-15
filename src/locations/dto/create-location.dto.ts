@@ -1,4 +1,4 @@
-import { ArrayNotEmpty, IsArray, IsString, MaxLength } from "class-validator";
+import { ArrayNotEmpty, IsArray, IsString, MaxLength, } from "class-validator";
 
 export class CreateLocationDto {
     @IsString()
