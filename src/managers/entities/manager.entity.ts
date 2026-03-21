@@ -8,7 +8,9 @@ export class Manager {
     managerId: string;
     @Column('text')
     managerFullName: string;
-    @Column('text')
+    @Column('text',{
+        unique: true,
+    })
     managerEmail: string;
     @Column('float')
     managerSalary: number;
