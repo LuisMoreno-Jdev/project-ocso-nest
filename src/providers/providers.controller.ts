@@ -1,7 +1,9 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 import { UserData } from 'src/auth/decorators/user.decorator';
 import { User } from 'src/auth/entities/user.entity';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { RolesGuard } from 'src/auth/guards/role.guard';
 import { CreateProviderDto } from './dto/create-provider.dto';
 import { UpdateProviderDto } from './dto/update-provider.dto';
 import { ProvidersService } from './providers.service';
@@ -16,6 +18,8 @@ export class ProvidersController {
     return this.providersService.create(createProviderDto);
   }
 
+  @Roles(['Admin'])
+  @UseGuards(RolesGuard)
   @Get()
   findAll(@UserData() userData: User) {
     if(userData.userRoles.includes('Employee')) throw new UnauthorizedException('No estás autorizado, solo Admin y Manager');
