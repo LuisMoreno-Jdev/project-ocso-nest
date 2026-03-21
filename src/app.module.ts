@@ -1,17 +1,19 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
 import { EmployeesModule } from './employees/employees.module';
+import { LocationsModule } from './locations/locations.module';
+import { ManagersModule } from './managers/managers.module';
 import { ProductsModule } from './products/products.module';
 import { ProvidersModule } from './providers/providers.module';
-import { ManagersModule } from './managers/managers.module';
-import { LocationsModule } from './locations/locations.module';
 import { RegionsModule } from './regions/regions.module';
-import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.host,
@@ -23,6 +25,11 @@ import { AuthModule } from './auth/auth.module';
       autoLoadEntities: true,
       synchronize: true,
       //logging: true,
+      extra: {
+        max: 20, // Increases the number of simultaneous connections allowed
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 2000,
+      },
     }),
     EmployeesModule, 
     ProductsModule, 

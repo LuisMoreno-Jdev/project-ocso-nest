@@ -11,47 +11,44 @@ export class ProductsService {
     @InjectRepository(Product)
     private productRepository: Repository<Product>
   ){}
-  create(createProductDto: CreateProductDto){
-    const product = this.productRepository.save(createProductDto);
-    return product;
+
+  async create(createProductDto: CreateProductDto){
+    // save() is async, it must be awaited
+    return await this.productRepository.save(createProductDto); 
   }
 
-  findAll() {
-    return this.productRepository.find();
+  async findAll() {
+    return await this.productRepository.find();
   }
 
-  findOne(id: string) {
-    const productFound = this.productRepository.findOneBy({
+  async findOne(id: string) {
+    const productFound = await this.productRepository.findOneBy({ // Added await
       productId: id,
-    })
-    if(!productFound) throw new NotFoundException()
+    });
+    if(!productFound) throw new NotFoundException();
     return productFound;
   }
 
-  findByProvider(id: string) {
-    return this.productRepository.findBy({
-      provider: {
-        providerId: id,
-      }
-    })
+  async findByProvider(id: string) {
+    return await this.productRepository.findBy({ // Added await
+      provider: { providerId: id }
+    });
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
     const productToUpdate = await this.productRepository.preload({
       productId: id,
       ...updateProductDto,
-    })
-    if(!productToUpdate) throw new NotFoundException()
-    this.productRepository.save(productToUpdate);
+    });
+    if(!productToUpdate) throw new NotFoundException();
+    await this.productRepository.save(productToUpdate); // Added await
     return productToUpdate;
   }
 
-  remove(id: string) {
-    this.productRepository.delete({
+  async remove(id: string) {
+    await this.productRepository.delete({ // Added await
       productId: id,
-    })
-    return {
-      message: `Objeto con id ${id} eliminado`
-    }
+    });
+    return { message: `Objeto con id ${id} eliminado` };
   }
 }

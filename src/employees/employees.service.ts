@@ -14,17 +14,17 @@ export class EmployeesService {
     private employeeRepository: Repository<Employee>
   ) {}
 
-  create(createEmployeeDto: CreateEmployeeDto) {
+  async create(createEmployeeDto: CreateEmployeeDto) {
     const employee = this.employeeRepository.create(createEmployeeDto);
-    return this.employeeRepository.save(employee);
+    return await this.employeeRepository.save(employee); // Added await
   }
 
-  findAll() {
-    return this.employeeRepository.find();
+  async findAll() {
+    return await this.employeeRepository.find(); // Added await
   }
 
-  findOne(id: string) {
-    const employee = this.employeeRepository.findOneBy({
+  async findOne(id: string) {
+    const employee = await this.employeeRepository.findOneBy({ // Added await
         employeeId: id,
     });
     if(!employee) throw new NotFoundException();
@@ -37,16 +37,14 @@ export class EmployeesService {
         ...updateEmployeeDto,
     });
     if(!employeeToUpdate) throw new NotFoundException();
-    this.employeeRepository.save(employeeToUpdate);
+    await this.employeeRepository.save(employeeToUpdate); // Added await
     return employeeToUpdate;
   }
 
-  remove(id: string) {
-    this.employeeRepository.delete({
+  async remove(id: string) {
+    await this.employeeRepository.delete({ // Added await
         employeeId: id,
-    })
-    return {
-        message: 'Employee deleted',
-    }
+    });
+    return { message: 'Employee deleted' };
   }
 }
