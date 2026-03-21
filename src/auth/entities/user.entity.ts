@@ -18,12 +18,10 @@ export class User {
     userRoles: string[];
 
     @OneToOne(() => Manager, {
-        eager: true,
     })
     manager: Manager;
 
     @OneToOne(() => Employee, {
-        eager: true,
     })
     employee: Employee;
 }
