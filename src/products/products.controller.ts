@@ -1,10 +1,12 @@
 import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
 import { ROLES } from 'src/auth/constants/roles.constants';
+import { ApiAuth } from 'src/auth/decorators/api.decorator';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
 
+@ApiAuth()
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}

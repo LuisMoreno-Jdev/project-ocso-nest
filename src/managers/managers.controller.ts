@@ -1,10 +1,12 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ROLES } from 'src/auth/constants/roles.constants';
+import { ApiAuth } from 'src/auth/decorators/api.decorator';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { CreateManagerDto } from './dto/create-manager.dto';
 import { UpdateManagerDto } from './dto/update-manager.dto';
 import { ManagersService } from './managers.service';
 
+@ApiAuth()
 @Controller('managers')
 export class ManagersController {
   constructor(private readonly managersService: ManagersService) {}

@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { EmployeesModule } from './employees/employees.module';
 import { LocationsModule } from './locations/locations.module';
@@ -35,7 +33,7 @@ import { RegionsModule } from './regions/regions.module';
     ProductsModule, 
     ProvidersModule, ManagersModule, LocationsModule, RegionsModule, AuthModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
