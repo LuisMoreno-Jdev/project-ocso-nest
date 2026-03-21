@@ -8,4 +8,8 @@ export class User {
     userEmail: string;
     @Column('text')
     password: string;
+    @Column('simple-array',{
+        default: 'Employee',
+    })
+    userRoles: string[];
 }

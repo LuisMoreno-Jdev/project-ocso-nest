@@ -1,4 +1,6 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { UserData } from 'src/auth/decorators/user.decorator';
+import { User } from 'src/auth/entities/user.entity';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { CreateProviderDto } from './dto/create-provider.dto';
 import { UpdateProviderDto } from './dto/update-provider.dto';
@@ -15,7 +17,8 @@ export class ProvidersController {
   }
 
   @Get()
-  findAll() {
+  findAll(@UserData() userData: User) {
+    if(userData.userRoles.includes('Employee')) throw new UnauthorizedException('No estás autorizado, solo Admin y Manager');
     return this.providersService.findAll();
   }
 
