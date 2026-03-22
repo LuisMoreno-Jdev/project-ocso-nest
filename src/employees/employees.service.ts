@@ -19,6 +19,19 @@ export class EmployeesService {
     return await this.employeeRepository.save(employee); // Added await
   }
 
+  async uploadPhoto(id: string, file: string) {
+    const employee = await this.employeeRepository.findOneBy({ // Added await
+        employeeId: id,
+    });
+    if(!employee) throw new NotFoundException();
+    employee.employeePhoto = file;
+    await this.employeeRepository.save(employee); // Added await
+    return { message: 'Photo uploaded',
+      fileName: file,
+      employeePhoto: employee.employeePhoto,
+    };
+  }
+
   async findAll() {
     return await this.employeeRepository.find(); // Added await
   }

@@ -1,8 +1,12 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Location } from 'src/locations/entities/location.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Region {
+    @ApiProperty({
+        default: '1'
+    })
     @PrimaryGeneratedColumn('increment')
     regionId: number;
     @Column({

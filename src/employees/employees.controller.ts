@@ -1,6 +1,8 @@
 import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 import { ROLES } from 'src/auth/constants/roles.constants';
 import { ApiAuth } from 'src/auth/decorators/api.decorator';
 import { Auth } from 'src/auth/decorators/auth.decorator';
@@ -11,6 +13,7 @@ import { Employee } from './entities/employee.entity';
 
 @ApiAuth()
 @ApiTags('Employees')
+@ApiBearerAuth()
 @Controller('employees')
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
@@ -31,10 +34,41 @@ export class EmployeesController {
   }
 
   @Auth(ROLES.Manager, ROLES.Employee)
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
-  uploadPhoto(@UploadedFile() file: Express.Multer.File){
-    return "Ok"
+  @Post('upload/:id')
+  @ApiOperation({summary: 'Upload a photo for an employee'})
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 200,
+    example: {
+      message: "Ok",
+    }
+  })
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './src/employees/employees-photos',
+      filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        const ext = extname(file.originalname);
+        const fileName = `${uniqueSuffix}${ext}`;
+        cb(null, fileName);
+      },
+    })
+  }))
+  uploadPhoto(@Param('id', new ParseUUIDPipe({version: '4'})) id: string,
+    @UploadedFile() file: Express.Multer.File,
+){
+    return this.employeesService.uploadPhoto(id, file.filename);
   }
   
   @Auth(ROLES.Manager)
