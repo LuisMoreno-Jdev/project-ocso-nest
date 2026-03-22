@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { ROLES } from 'src/auth/constants/roles.constants';
 import { ApiAuth } from 'src/auth/decorators/api.decorator';
 import { Auth } from 'src/auth/decorators/auth.decorator';
@@ -7,6 +8,7 @@ import { UpdateLocationDto } from './dto/update-location.dto';
 import { LocationsService } from './locations.service';
 
 @ApiAuth()
+@ApiTags('Locations')
 @Controller('locations')
 export class LocationsController {
   constructor(private readonly locationsService: LocationsService) {}

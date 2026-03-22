@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, UnauthorizedException } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { ROLES } from 'src/auth/constants/roles.constants';
 import { ApiAuth } from 'src/auth/decorators/api.decorator';
 import { Auth } from 'src/auth/decorators/auth.decorator';
@@ -9,6 +10,7 @@ import { UpdateProviderDto } from './dto/update-provider.dto';
 import { ProvidersService } from './providers.service';
 
 @ApiAuth()
+@ApiTags('Providers')
 @Controller('providers')
 export class ProvidersController {
   constructor(private readonly providersService: ProvidersService) {}
