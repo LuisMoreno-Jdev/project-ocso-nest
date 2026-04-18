@@ -1,13 +1,12 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ROLES } from 'src/auth/constants/roles.constants';
-import { ApiAuth } from 'src/auth/decorators/api.decorator';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
 import { LocationsService } from './locations.service';
 
-@ApiAuth()
+//@ApiAuth()
 @ApiTags('Locations')
 @Controller('locations')
 export class LocationsController {
@@ -19,7 +18,7 @@ export class LocationsController {
     return this.locationsService.create(createLocationDto);
   }
 
-  @Auth(ROLES.Employee, ROLES.Manager)
+  //@Auth(ROLES.Employee, ROLES.Manager)
   @Get()
   findAll() {
     return this.locationsService.findAll();
