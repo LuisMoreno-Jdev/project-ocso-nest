@@ -13,8 +13,22 @@ export class LocationsService {
     @InjectRepository(Location)
     private locationsRepository: Repository<Location>
   ){}
-  create(createLocationDto: CreateLocationDto){
-    return this.locationsRepository.save(createLocationDto);
+  async create(createLocationDto: CreateLocationDto) {
+    // 1. Desestructuramos para separar managerId del resto de los datos
+    const { managerId, ...locationData } = createLocationDto;
+
+    // 2. Creamos la instancia de la entidad
+    const location = this.locationsRepository.create(locationData);
+
+    // 3. Si viene un managerId, lo asignamos a la propiedad de relación 'manager'
+    if (managerId) {
+      // TypeORM permite asignar el ID directamente a la propiedad de relación 
+      // si está configurado con @JoinColumn
+      location.manager = managerId; 
+    }
+
+    // 4. Guardamos la entidad ya vinculada
+    return this.locationsRepository.save(location);
   }
 
   findAll() {
