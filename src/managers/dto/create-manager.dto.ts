@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNumber, IsObject, IsOptional, IsString, MaxLength } from "class-validator";
+import { IsEmail, IsNumber, IsOptional, IsString, MaxLength } from "class-validator";
 import { Location } from "src/locations/entities/location.entity";
 
 export class CreateManagerDto {
@@ -23,7 +23,7 @@ export class CreateManagerDto {
     managerPhoneNumber: string;
 
     @ApiProperty()
-    @IsObject()
+    @IsNumber()
     @IsOptional()
     location: Location;
 }
