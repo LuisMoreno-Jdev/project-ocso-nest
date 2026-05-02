@@ -19,7 +19,11 @@ export class ProvidersService {
   }
 
   findAll() {
-    return this.providerRepository.find();
+    return this.providerRepository.find({
+      relations: {
+        products: true,
+      },
+    });
   }
 
   findByName(name: string) {
@@ -31,8 +35,13 @@ export class ProvidersService {
   }
 
   findOne(id: string) {
-    const provider = this.providerRepository.findOneBy({
-      providerId: id,
+    const provider = this.providerRepository.findOne({
+      where: {
+        providerId: id,
+      },
+      relations: {
+        products: true,
+      },
     })
     if(!provider) throw new NotFoundException('Provider not found');
     return provider;
