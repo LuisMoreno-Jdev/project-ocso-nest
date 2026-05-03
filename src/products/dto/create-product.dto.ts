@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNumber, IsObject, IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
+import { IsInt, IsNumber, IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
 import { Provider } from 'src/providers/entities/provider.entity';
 
 
@@ -23,6 +23,6 @@ export class CreateProductDto{
     countSeal: number;
     
     @ApiProperty()
-    @IsObject()
-    provider: Provider;
+    @IsString()
+    provider: Provider | string;
 }
