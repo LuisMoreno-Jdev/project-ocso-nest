@@ -8,6 +8,7 @@ import { ManagersModule } from './managers/managers.module';
 import { ProductsModule } from './products/products.module';
 import { ProvidersModule } from './providers/providers.module';
 import { RegionsModule } from './regions/regions.module';
+import { AwsModule } from './aws/aws.module';
 
 @Module({
   imports: [
@@ -31,7 +32,7 @@ import { RegionsModule } from './regions/regions.module';
     }),
     EmployeesModule, 
     ProductsModule, 
-    ProvidersModule, ManagersModule, LocationsModule, RegionsModule, AuthModule,
+    ProvidersModule, ManagersModule, LocationsModule, RegionsModule, AuthModule, AwsModule,
   ],
   controllers: [],
   providers: [],
