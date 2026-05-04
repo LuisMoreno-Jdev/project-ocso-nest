@@ -91,8 +91,23 @@ export class EmployeesController {
 
   @Auth(ROLES.Manager, ROLES.Employee)
   @Patch(':id')
-  update(@Param('id', new ParseUUIDPipe({version: '4'})) id: string, @Body() updateEmployeeDto: UpdateEmployeeDto) {
-    return this.employeesService.update(id, updateEmployeeDto);
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './src/employees/employees-photos',
+      filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        const ext = extname(file.originalname);
+        cb(null, `${uniqueSuffix}${ext}`);
+      },
+    })
+  }))
+  update(
+    @Param('id', new ParseUUIDPipe({version: '4'})) id: string, 
+    @Body() updateEmployeeDto: UpdateEmployeeDto,
+    @UploadedFile() file?: Express.Multer.File // El archivo ahora es opcional aquí
+  ) {
+    // Si viene un archivo, pasamos su nombre, si no, undefined
+    return this.employeesService.update(id, updateEmployeeDto, file?.filename);
   }
   
   @Auth(ROLES.Manager)
