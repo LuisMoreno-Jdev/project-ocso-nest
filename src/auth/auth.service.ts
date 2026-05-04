@@ -81,9 +81,10 @@ export class AuthService {
     return { token: this.jwtService.sign(payload) };
   }
 
-  async updateUser(userEmail: string, updateUserDto: UpdateUserDto) {
+  async updateUser(id: string, updateUserDto: UpdateUserDto) {
+    updateUserDto.password = bcrypt.hashSync(updateUserDto?.password || '', 5);
     const userToUpdate = await this.userRepository.preload({
-      userEmail,
+      userId: id,
       ...updateUserDto,
     });
 
