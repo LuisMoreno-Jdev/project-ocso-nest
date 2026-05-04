@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Param, Patch, Post, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Param, Patch, Post, Query, Res } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import * as express from 'express';
 import { AuthService } from './auth.service';
@@ -13,16 +13,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('register/employee/[id]')
-  registerEmployee(@Body() createUserDto: CreateUserDto, @Param('id') id: string){
-    if (createUserDto.userRoles.includes('Admin') || createUserDto.userRoles.includes('Manager')) throw new BadRequestException('Invalid Role');
-    return this.authService.registerEmployee(id, createUserDto);
-  }
-
-  @Post('register/manager')
-  registerManager(@Body() createUserDto: CreateUserDto, @Param('id') id: string){
-    if (createUserDto.userRoles.includes('Admin') || createUserDto.userRoles.includes('Employee')) throw new BadRequestException('Invalid Role');
-    return this.authService.registerManager(id, createUserDto);
+  @Post('register/:id')
+  registerManager(@Query("role") role: string, @Body() createUserDto: CreateUserDto, @Param('id') id: string){
+    if (role === 'Manager') {
+      return this.authService.registerManager(id, createUserDto);
+    }else if (role === 'Employee') {
+      return this.authService.registerEmployee(id, createUserDto);
+    }
+    throw new BadRequestException('Invalid Role');
   }
 
   @Post('login')

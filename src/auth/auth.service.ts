@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcrypt";
@@ -22,44 +22,43 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  // LÓGICA PARA EMPLEADOS (Como la del profe pero con validación de tipos)
   async registerEmployee(id: string, createUserDto: CreateUserDto) {
-    // Hasheamos usando el nombre de tu campo 'password'
+    // NUEVA ESTRUCTURA: Validación de roles interna
+    const roles = createUserDto.userRoles;
+    if (roles.includes("Admin") || roles.includes("Manager")) {
+      throw new BadRequestException("Invalid Role");
+    }
+
+    // Proceso de guardado
     createUserDto.password = bcrypt.hashSync(createUserDto.password, 5);
-    
-    // Guardamos el usuario
     const user = await this.userRepository.save(createUserDto);
 
-    // Preparamos la entidad Employee
     const employeeToUpdate = await this.employeeRepository.preload({
       employeeId: id,
     });
 
-    // Guardrail: Evita el error de "possibly undefined"
     if (!employeeToUpdate) throw new NotFoundException(`Employee ${id} not found`);
 
-    // Vinculamos y guardamos en el repositorio de empleados
     employeeToUpdate.user = user;
     return this.employeeRepository.save(employeeToUpdate);
   }
 
-  // LÓGICA PARA MANAGERS (Replicando la segunda parte de la imagen)
   async registerManager(id: string, createUserDto: CreateUserDto) {
-    // 1. Hashear password
-    createUserDto.password = bcrypt.hashSync(createUserDto.password, 5);
+    // NUEVA ESTRUCTURA: Un manager no puede auto-asignarse rol de Admin
+    const roles = createUserDto.userRoles;
+    if (roles.includes("Admin") || roles.includes("Employee")) {
+      throw new BadRequestException("Invalid Role");
+    }
 
-    // 2. Crear el registro en la tabla User
+    createUserDto.password = bcrypt.hashSync(createUserDto.password, 5);
     const user = await this.userRepository.save(createUserDto);
 
-    // 3. Buscar al manager por ID para actualizarlo
     const managerToUpdate = await this.managerRepository.preload({
       managerId: id,
     });
 
-    // 4. Validar que exista para que TS no marque error
     if (!managerToUpdate) throw new NotFoundException(`Manager ${id} not found`);
 
-    // 5. Vincular al usuario y guardar en el repositorio de MANAGERS
     managerToUpdate.user = user;
     return this.managerRepository.save(managerToUpdate);
   }
